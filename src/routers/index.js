@@ -3,7 +3,7 @@ const router = new Router();
 
 router.get('/', async (ctx) => {
     let data = await new Promise((resolve, reject) => {
-        resolve("server")
+        resolve("恭喜您，服务器已经启动！")
     })
     ctx.body = data;
 })
