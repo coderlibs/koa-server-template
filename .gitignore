@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+public/app
+public/pc
+logs/
+package-lock.json
