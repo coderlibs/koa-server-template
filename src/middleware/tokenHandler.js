@@ -2,7 +2,7 @@
  * @程序员资源库 coderlibs出品
  **/
 const koaJwt = require('koa-jwt') // 路由权限控制
-const { tokenInfo, domains } = require("@/config")
+const { tokenInfo, noverifyToken, domains } = require("@/config")
 const { setCookies } = require("@/utils/setCookies");
 // jwt
 module.exports = (app) => {
@@ -33,6 +33,6 @@ app.use(function(ctx, next){
 });
 // 免验证
 app.use(koaJwt({secret:tokenInfo.TokenSecret,cookie:tokenInfo.TokenName}).unless({
-    path: [/^\/test/,/^\/public/,/^\/assets/,/.*passApi.*?(?=\b)/,/^\/404/] // 除了这些请求地址，其他的URL都需要验证
+    path: [...noverifyToken,/^\/test/,/^\/public/,/^\/assets/,/.*passApi.*?(?=\b)/,/^\/404/] // 除了这些请求地址，其他的URL都需要验证
 }))
 }

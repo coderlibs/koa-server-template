@@ -17,7 +17,39 @@
 1.  node版本建议16+
 2.  本地运行：mac版本使用 npm run dev; win版本使用 npm run win:dev
 3.  线上部署使用nvm管理，npm start
+
+### 特别注意：
+
+1. 服务器域名鉴权token，和数据库相关配置在src/config下进行配置
+
+2. 生命周期的setup阶段会获取自定义请求头，用于判断是否是规定域名请求，也用于权限鉴权判断，可以自行考虑是否删除，相关配置，如下:
+```js
+// 目录==>src/hooks/setup
+// ctx挂载配置
+app.use(async (ctx, next) => {
+    ctx.develop = config.develop // ctx挂载development配置
+    ctx.state.domains = config.domains // ctx挂载domains配置
+    ctx.noLogger = nologgerList.some(el => ctx.request.url.includes(el))  // 接口是否符合日志免打印
+    ctx.state.__HOST__ = ctx.request.headers['x-domain-for']; // 自定义请求头，用于判断是否属于规定域名请求
+    await next()
+})
+```
+
+```js
+// 目录==>src/middleware/tokenHandler
+// token 失效返回 401
+app.use(function(ctx, next){
+    let isHomeStation = ctx.state.__HOST__&&ctx.state.__HOST__.includes(domains.CookieDomain) || false
+......
+```
+3. 日志清理
+
+```shell
+    请根据 src/config/log.md 说明配置服务器脚本，定时清理日志
+```
+
    
+
 #### 参与贡献
 
 本项目作者由前端架构师 类维松 全权负责开发维护
