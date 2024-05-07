@@ -1,8 +1,8 @@
 const config = require("@/config")
 const health = require("@/middleware/healthHandler")
 const errorHandler = require('@/middleware/errorHandler.js');
-const { logger, accessLogger } = require('@/utils/log/logger');
-const { repeatLog } = require('@/utils/log/overLog.js');
+const { logger, accessLogger } = require('@/utils/logger/logger');
+const { repeatLog } = require('@/utils/logger/overLog.js');
 const loggerHandler = require('@/middleware/loggerHandler')
 const tokenHandler = require("@/middleware/tokenHandler");
 const { nologgerList } = require("@/config");
