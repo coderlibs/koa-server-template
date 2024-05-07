@@ -18,6 +18,6 @@ module.exports = {
         user: develop ? 'root' : 'your database user name', // 用户名
         password: develop ? '12345678' : 'your server database password' // 用户密码   
     },
-    noverifyToken: [], // 接口请求免验证
+    noverifyToken: ['/'], // 接口请求免验证
     nologgerList: [] // 接口请求日志免打印
 }
