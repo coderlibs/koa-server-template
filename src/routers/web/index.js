@@ -1,8 +1,8 @@
 const Router = require('koa-router');
 const web = new Router();
-const article = require("./article.js");
+const news = require("./news.js");
 const IP2Region = require('ip2region').default;
-web.use('/article', article.routes(), article.allowedMethods());
+web.use('/news', news.routes(), news.allowedMethods());
 
 web.get('/', async (ctx) => {
     let data = await new Promise((resolve, reject) => {
