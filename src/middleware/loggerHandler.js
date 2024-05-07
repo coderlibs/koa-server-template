@@ -1,7 +1,7 @@
 /**
  * @程序员资源库 coderlibs出品
  **/
- const { logger } = require('@/utils/log/logger');
+ const { logger } = require('@/utils/logger/logger');
  const methods = ["trace", "debug", "info", "warn", "error", "fatal", "mark"]
   
  module.exports = () => {
