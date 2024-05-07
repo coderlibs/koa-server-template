@@ -1,6 +1,6 @@
 .DS_Store
 node_modules/
-public/app
-public/pc
+# public/app  // 自己配置资源后需要放开
+# public/pc // 自己配置资源后需要放开
 logs/
 package-lock.json
