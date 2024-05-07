@@ -9,11 +9,11 @@ article.get('/', async (ctx) => {
     ctx.body = data;
 })
 // 查询文章列表
-article.post('/publicApi/getList', async (ctx,next)=>{
+article.post('/passApi/getList', async (ctx,next)=>{
     await ArticleController.getList(ctx, next)
 })
 // 根据id查询文章
-article.get('/publicApi/getArticle', async (ctx,next)=>{
+article.get('/passApi/getArticle', async (ctx,next)=>{
     await ArticleController.getArticle(ctx, next)
 })
 // 发布文章

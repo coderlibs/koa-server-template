@@ -6,49 +6,29 @@ const { v1: uuidv1 } = require('uuid');
 const { setCookies } = require("@utils/setCookies");
 const { getToken } = require('@utils/jwt-token');
 
-// 发送邮箱验证码
-login.post('/sedcode', async (ctx) => {
-    let query = ctx.request.body
-    let email = query?query.email:""
-    send_email(email).then(res=>{
-        ctx.Relust = res
-    }).catch(err=>{
-        ctx.msg = err
-        ctx.status = 400
-    })
-})
-
 // 注册账号
 login.post('/register', async (ctx,next) => {
     let res = await handlePassword(ctx)
     let body = res.request.body
-    let hasUser = await db.query(`SELECT * FROM coderuser_list WHERE email='${body.email}' or userName='${body.name}'`)
-    if(hasUser.length && hasUser[0].email === body.email){
+    let hasUser = await db.query(`SELECT * FROM user WHERE account='${body.account}' or userName='${body.name}'`)
+    if(hasUser.length && hasUser[0].account === body.account){
         ctx.status = 400
-        ctx.msg = "抱歉，您的邮箱账号已被注册！"
+        ctx.msg = "抱歉，您的账号已被注册！"
     }else if(hasUser.length && hasUser[0].userName === body.name){
         ctx.status = 400
         ctx.msg = "抱歉，您的用户名已被使用，请换一个吧！"
     }else{
-        let istrue = verify_email(body.email,body.verifycode)
-        if(!istrue){
-            ctx.msg = "验证码错误，请重试"
-            ctx.status = 400
-        }else{
-            const uuid="cl_"+uuidv1().split('-').join("")
-            let num = Math.floor(Math.random()*36+1)
-            let photo = `https://coderlibs.com/www/wwwroot/public/img/coderlibs/userimg/photo/${num}.jpg`
-            let time = Date.now(); 
-            let sqlLang = `INSERT INTO coderuser_list VALUES ('0', '${uuid}', '${body.name}', '${body.email}', '${body.password}', '${photo}','', false ,'无个性，不签名！','2','${time}')`;
-            try{
-                let code = await db.query(sqlLang)
-                if(code){
-                    ctx.Relust = "恭喜您成为尊贵的程序员资源库用户，愿coderlibs照亮您的事业与前程！" 
-                }
-            }catch(err){
-                ctx.msg = err
-                ctx.status = 400
+        const uuid="cl_"+uuidv1().split('-').join("")
+        let time = Date.now(); 
+        let sqlLang = `INSERT INTO user VALUES ('0', '${uuid}', '${body.name}', '${body.account}', '${body.password}', '无个性，不签名！','${time}')`;
+        try{
+            let code = await db.query(sqlLang)
+            if(code){
+                ctx.Relust = "恭喜您，账号注册成功！" 
             }
+        }catch(err){
+            ctx.msg = err
+            ctx.status = 400
         }
     }
 })
@@ -57,20 +37,20 @@ login.post('/register', async (ctx,next) => {
 login.post('/login', async (ctx,next) => {
     let res = await handlePassword(ctx)
     let body = res.request.body
-    let hasEmail = await db.query(`SELECT * FROM coderuser_list WHERE email='${body.email}'`)
-    if(hasEmail.length){
-        let hasPassword = await db.query(`SELECT * FROM coderuser_list WHERE email='${body.email}' and password='${body.password}'`)
+    let hasAccount = await db.query(`SELECT * FROM user WHERE account='${body.account}'`)
+    if(hasAccount.length){
+        let hasPassword = await db.query(`SELECT * FROM user WHERE account='${body.account}' and password='${body.password}'`)
         if(hasPassword.length){
             let obj = hasPassword[0]
             delete obj.password
             ctx.Relust = {
-                message:"尊贵的coderlibs用户，欢迎回家，即将进入编程世界！",
+                message:"尊贵的用户，欢迎回家！",
                 data:obj
             }
             let user = JSON.parse(JSON.stringify(hasPassword))[0]
-            let token = getToken({email:user.email,password:user.password})
+            let token = getToken({account:user.account,password:user.password})
             if (token) {
-                return setCookies(ctx, token, user.email, user.userId);
+                return setCookies(ctx, token, user.account, user.userId);
             }
             setCookies(ctx, null, null, null);
         }else{
